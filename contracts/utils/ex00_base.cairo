@@ -266,7 +266,7 @@ func assign_rank_to_player{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range
 
     // Checking if we reach max_rank
     if (new_next_rank == max_rank) {
-        next_rank_storage.write(0);
+        next_rank_storage.write(1);
     } else {
         next_rank_storage.write(new_next_rank);
     }
