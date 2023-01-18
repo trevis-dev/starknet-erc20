@@ -94,6 +94,9 @@ func read_ticker{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr
     player_address: felt
 ) -> (ticker: felt) {
     let (rank) = assigned_rank(player_address);
+    with_attr_error_message("No rank assigned via ex1_assign_rank. Maybe the transaction is pending?") {
+        assert_not_zero(rank);
+    }
     let (ticker) = random_attributes_storage.read(rank, 0);
     return (ticker,);
 }
@@ -103,6 +106,9 @@ func read_supply{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr
     player_address: felt
 ) -> (supply: Uint256) {
     let (rank) = assigned_rank(player_address);
+    with_attr_error_message("No rank assigned via ex1_assign_rank. Maybe the transaction is pending? ") {
+        assert_not_zero(rank);
+    }
     let (supply_felt) = random_attributes_storage.read(rank, 1);
     let supply: Uint256 = Uint256(supply_felt, 0);
     return (supply,);
@@ -122,6 +128,7 @@ func constructor{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr
     ex_initializer(_tuto_erc20_address, _players_registry, _workshop_id);
     dummy_token_address_storage.write(_dummy_token_address);
     teacher_accounts.write(_first_teacher, 1);
+    rank_storage.write(1); // 0 will be used to flag unassigned addresses
     // Hard coded value for now
     max_rank_storage.write(100);
     return ();
